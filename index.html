@@ -211,16 +211,18 @@
     .nav .brand{padding:0;font-size:16px;flex:0 0 auto}
     .nav .lvlsw{margin-left:4px;flex:0 0 auto}
     .nav .tab[data-v]{display:none}
-    .about-top{flex:0 0 auto;padding:7px 10px;font-size:13px;white-space:nowrap}
-    .themeSel{flex:1 1 auto;min-width:0;max-width:130px;margin-left:auto;padding:7px 8px;font-size:12.5px}
+    .about-top{flex:0 0 auto;margin-left:auto;padding:7px 10px;font-size:13px;white-space:nowrap}
+    #themeSelTop{display:none}
     #bottomNav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;
       background:var(--barbg);backdrop-filter:blur(10px);border-top:1px solid var(--line);
       padding:2px 4px calc(2px + env(safe-area-inset-bottom))}
-    #bottomNav button{flex:1;min-width:0;border:none;background:transparent;color:var(--muted);font:inherit;
+    #bottomNav button,#bottomNav .themefoot{flex:1;min-width:0;border:none;background:transparent;color:var(--muted);font:inherit;
       font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;cursor:pointer;transition:.12s;white-space:nowrap;height:46px}
-    #bottomNav button .bi{font-size:17px;line-height:1}
-    #bottomNav button .lbl{line-height:1.1}
+    #bottomNav .bi{font-size:17px;line-height:1}
+    #bottomNav .lbl{line-height:1.1}
     #bottomNav button.active{color:var(--brand)}
+    #bottomNav .themefoot{position:relative}
+    #bottomNav .themefoot .themeSel{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;margin:0;border:none;border-radius:0}
     .wrap{padding-bottom:60px}
     .bar#todayBar{bottom:50px}
   }
@@ -231,14 +233,14 @@
 <body>
   <div class="wrap">
     <div class="nav">
-      <span class="brand"><span class="dot"></span>JLPT</span>
+      <span class="brand"><span class="dot"></span>ニュンのJLPT</span>
       <span class="lvlsw"><button class="lvbtn" id="lvN2" onclick="setLevel('N2')">N2</button><button class="lvbtn" id="lvN1" onclick="setLevel('N1')">N1</button></span>
       <span class="spacer"></span>
       <button class="tab active" data-v="today" onclick="go('today')">Học hôm nay</button>
       <button class="tab" data-v="review" onclick="go('review')">Ôn tập <span id="dueBadge"></span></button>
       <button class="tab" data-v="prog" onclick="go('prog')">Tiến độ</button>
-      <button class="tab about-top" onclick="showAbout()" title="Giới thiệu">🌸 Giới thiệu</button>
-      <select class="themeSel" id="themeSel" onchange="setTheme(this.value)" title="Đổi giao diện">
+      <button class="tab about-top" onclick="showAbout()" title="ニュンơi">🌸 ニュンơi</button>
+      <select class="themeSel" id="themeSelTop" onchange="setTheme(this.value)" title="Đổi giao diện">
         <option value="light">🟢 Xanh mát</option>
         <option value="cream">🟡 Kem (ấm)</option>
         <option value="pink">🩷 Hồng nhẹ</option>
@@ -300,6 +302,15 @@
     <button data-v="today" onclick="go('today')"><span class="bi">📝</span><span class="lbl">Học</span></button>
     <button data-v="review" onclick="go('review')"><span class="bi">🔁</span><span class="lbl">Ôn tập <span id="dueBadge2"></span></span></button>
     <button data-v="prog" onclick="go('prog')"><span class="bi">📈</span><span class="lbl">Tiến độ</span></button>
+    <label class="themefoot"><span class="bi">🎨</span><span class="lbl">Giao diện</span>
+      <select class="themeSel" id="themeSel" onchange="setTheme(this.value)" aria-label="Đổi giao diện">
+        <option value="light">🟢 Xanh mát</option>
+        <option value="cream">🟡 Kem (ấm)</option>
+        <option value="pink">🩷 Hồng nhẹ</option>
+        <option value="sepia">📜 Giấy (sepia)</option>
+        <option value="dark">🌙 Tối dịu</option>
+      </select>
+    </label>
   </nav>
 
 <script>
@@ -3388,7 +3399,8 @@ function syncLevelBtns(){const lv=curLevel();const a=document.getElementById('lv
 function setLevel(lv){ if(lv===curLevel())return; ST.level=lv; saveState(ST); syncLevelBtns(); QK=null;
   const act=document.querySelector('.tab.active'); go(act?act.dataset.v:'today'); }
 function setTheme(t){ if(t&&t!=='light')document.body.dataset.theme=t; else delete document.body.dataset.theme;
-  ST.theme=t; saveState(ST); }
+  ST.theme=t; saveState(ST);
+  document.querySelectorAll('.themeSel').forEach(s=>{if(s.value!==t)s.value=t;}); }
 function exportData(){const blob=new Blob([JSON.stringify(ST)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='jlpt-n2-progress-'+todayStr()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
@@ -3629,7 +3641,7 @@ function viewSession(idx){
 
 /* ================= INIT ================= */
 (function initTheme(){const t=ST.theme||'pink';if(t!=='light')document.body.dataset.theme=t;
-  const sel=document.getElementById('themeSel');if(sel)sel.value=t;})();
+  document.querySelectorAll('.themeSel').forEach(s=>s.value=t);})();
 syncLevelBtns();go('today');
 </script>
 </body>
