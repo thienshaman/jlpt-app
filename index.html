@@ -260,8 +260,6 @@
       <div id="testWrap" style="display:none">
         <div class="timerchip" id="timerChip"><span class="timer" id="timer">25:00</span></div>
         <div id="testHeader"></div>
-        <div class="note">Câu <b>問題8 (文の組み立て)</b>: chọn mảnh điền vào ô <b style="color:var(--brand)">★</b>.
-          Chấm xong, câu <b>sai tự vào "Ôn tập"</b> (lặp lại ngắt quãng) và điểm lưu vào "Tiến độ".</div>
         <div id="quiz"></div>
         <div class="result" id="result">
           <div class="score" id="scoreNum">0 / 0</div>
@@ -3359,6 +3357,7 @@ function qkReveal(ok){
   nav.innerHTML=`<button class="btn-main btn-sm" onclick="qkAdvance()">Tiếp →</button><button class="btn-ghost btn-sm" onclick="qkEnd()">■ Về menu (đã tự lưu)</button>`;
   document.getElementById('qkexpl').appendChild(nav);
   refreshBadge();
+  nav.scrollIntoView({behavior:'smooth',block:'center'});
 }
 function qkPick(j){const it=QK.cur;const ok=j===it.correct;QK._pick=it.opts[j];
   it.opts.forEach((_,k)=>{const el=document.getElementById('qko'+k);if(k===it.correct)el.classList.add('correct');else if(k===j)el.classList.add('wrong');el.onclick=null;});
