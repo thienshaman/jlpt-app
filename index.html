@@ -3171,7 +3171,7 @@ const CARDS=[
 /* ================= STATE (localStorage) ================= */
 const SKEY="jlpt_n2_trainer_v1";
 const INTERVALS=[0,1,2,4,8,16,30]; // ngày theo box
-const todayStr=()=>new Date().toISOString().slice(0,10);
+const todayStr=()=>new Date(Date.now()+7*3600*1000).toISOString().slice(0,10); // ngày theo giờ VN (UTC+7)
 function addDays(d,n){const t=new Date(d+"T00:00:00Z");t.setUTCDate(t.getUTCDate()+n);return t.toISOString().slice(0,10);}
 function loadState(){try{return JSON.parse(localStorage.getItem(SKEY))||{}}catch(e){return{}}}
 function saveState(s){localStorage.setItem(SKEY,JSON.stringify(s));}
@@ -3350,7 +3350,7 @@ function qkReveal(ok){
   QK.items.push({id:it.id,ok:ok,pick:QK._pick});
   markSeen(it.id,ok);
   // tự lưu phiên ngay mỗi câu — KHÔNG cần bấm "Kết thúc"
-  if(QK.histIdx==null){ST.history.push({date:TEST_DATE,testId:"⚡ "+QK.label,level:curLevel(),correct:QK.correct,total:QK.done,sec:{},secT:{},items:QK.items.slice()});QK.histIdx=ST.history.length-1;}
+  if(QK.histIdx==null){ST.history.push({date:todayStr(),testId:"⚡ "+QK.label,level:curLevel(),correct:QK.correct,total:QK.done,sec:{},secT:{},items:QK.items.slice()});QK.histIdx=ST.history.length-1;}
   else{const rec=ST.history[QK.histIdx];rec.correct=QK.correct;rec.total=QK.done;rec.items=QK.items.slice();}
   saveState(ST);
   const nav=document.createElement('div');nav.className="row";nav.style.marginTop="14px";
@@ -3485,7 +3485,7 @@ function grade(){
   });
   document.getElementById('quiz').classList.add('graded'); // hé lộ ghi chú đáp án + bản dịch
   // lưu tiến độ (mỗi phiên làm bài ghi 1 lần)
-  if(!sessionLogged){ST.history.push({date:TEST_DATE,testId:CUR_LABEL,level:curLevel(),correct:score,total:DATA.length,sec:secC,secT:secT,items:items});sessionLogged=true;saveState(ST);}
+  if(!sessionLogged){ST.history.push({date:todayStr(),testId:CUR_LABEL,level:curLevel(),correct:score,total:DATA.length,sec:secC,secT:secT,items:items});sessionLogged=true;saveState(ST);}
   const pct=Math.round(score/DATA.length*100);
   document.getElementById('scoreNum').textContent=`${score} / ${DATA.length}`;
   document.getElementById('scoreMsg').textContent=`${pct}% · `+(pct>=80?"Xuất sắc! 🎉":pct>=60?"Khá tốt 💪 — xem kỹ câu sai.":"Cùng ôn lại để vá lỗ hổng nhé.");
